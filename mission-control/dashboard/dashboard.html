@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Mission Control — Dashboard</title>
+<link rel="stylesheet" href="../shared/theme.css" />
+<link rel="stylesheet" href="../shared/timeline.css" />
+<link rel="stylesheet" href="../shared/missionForm.css" />
+<link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="sidebar-brand-icon" aria-hidden="true">🛰️</span>
+        <div>
+          <div class="sidebar-title">MISSION CONTROL</div>
+          <div class="sidebar-subtitle eyebrow">Distraction Replay</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item" type="button" data-view="live"><span class="nav-item-icon">🏠</span> Home</button>
+        <button class="nav-item" type="button" data-view="report"><span class="nav-item-icon">🛡️</span> Mission Report</button>
+        <button class="nav-item" type="button" data-view="analytics"><span class="nav-item-icon">📈</span> Weekly Analytics</button>
+        <button class="nav-item" type="button" data-view="config"><span class="nav-item-icon">⚙️</span> Classification</button>
+      </nav>
+
+      <div class="sidebar-status" id="sidebar-status"><!-- populated by dashboard.js --></div>
+    </aside>
+
+    <main class="content" id="content-root">
+      <!-- populated by dashboard.js -->
+    </main>
+  </div>
+
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>

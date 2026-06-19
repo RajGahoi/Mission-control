@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Mission Control</title>
+<link rel="stylesheet" href="../shared/theme.css" />
+<link rel="stylesheet" href="../shared/missionForm.css" />
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup">
+    <header class="popup-header">
+      <div class="popup-brand">
+        <span class="popup-brand-icon" aria-hidden="true">🛰️</span>
+        <span class="eyebrow">Mission Control</span>
+      </div>
+      <button id="open-dashboard-btn" class="btn btn-ghost btn-sm" type="button">Dashboard</button>
+    </header>
+
+    <main id="view-root" class="popup-body">
+      <!-- populated by popup.js -->
+    </main>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

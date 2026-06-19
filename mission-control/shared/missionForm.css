@@ -1,0 +1,21 @@
+/* shared/missionForm.css */
+
+.mission-form .duration-presets {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mission-form .duration-presets .btn-sm { flex: 1; padding: 8px 6px; }
+.mission-form .duration-presets .btn-sm.is-selected {
+  border-color: var(--accent-cyan-dim);
+  background: rgba(45, 212, 255, 0.14);
+  color: var(--accent-cyan);
+}
+
+.mission-form .form-error {
+  font-size: 12px;
+  color: var(--cat-distracting);
+  margin: -6px 0 6px;
+  min-height: 14px;
+}

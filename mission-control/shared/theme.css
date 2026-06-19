@@ -1,0 +1,330 @@
+/* shared/theme.css
+   Mission Control Room design tokens.
+   ----------------------------------------------------------------
+   Signature idea: a flight-recorder / instrument-panel aesthetic.
+   Numbers and timestamps live in a monospace "telemetry" face;
+   headings live in a tracked-out display face. Category colors are
+   functional, not decorative: phosphor green = productive signal,
+   magenta = alert/distraction, slate = neutral/no-signal. Rank
+   colors tell a story on their own gradient, from gold (S) down to
+   alert magenta (D), so the letter alone communicates the verdict.
+   This file is imported by popup/, dashboard/, and replay/ — change
+   a token here and the whole extension restyles.
+*/
+
+:root {
+  /* Surfaces */
+  --void: #0a0e16;
+  --void-deep: #060810;
+  --panel: #121828;
+  --panel-elevated: #161e33;
+  --panel-border: #243150;
+  --panel-border-soft: #1a2438;
+
+  /* Functional category colors */
+  --cat-productive: #3ef2a0;
+  --cat-distracting: #ff3d8f;
+  --cat-neutral: #6b7894;
+
+  /* Core accents */
+  --accent-cyan: #2dd4ff;
+  --accent-cyan-dim: #1b6e87;
+  --accent-amber: #ffb347;
+
+  /* Rank gradient: gold -> cyan -> green -> orange -> magenta */
+  --rank-s: #ffd23f;
+  --rank-a: #2dd4ff;
+  --rank-b: #3ef2a0;
+  --rank-c: #ff9f43;
+  --rank-d: #ff3d8f;
+
+  /* Text */
+  --text-primary: #e9eefb;
+  --text-secondary: #9aa8c7;
+  --text-dim: #5d6889;
+
+  /* Type */
+  --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Roboto Mono', Consolas, 'Liberation Mono', monospace;
+
+  /* Geometry */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+
+  /* Glows */
+  --glow-cyan: 0 0 18px rgba(45, 212, 255, 0.4);
+  --glow-magenta: 0 0 18px rgba(255, 61, 143, 0.4);
+  --glow-amber: 0 0 20px rgba(255, 179, 71, 0.45);
+  --glow-green: 0 0 16px rgba(62, 242, 160, 0.4);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--void);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Faint instrument-grid + vignette backdrop. Subtle on purpose — the
+   replay timeline is the one place allowed to be loud. */
+body {
+  position: relative;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(45, 212, 255, 0.07), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0px, transparent 1px, transparent 32px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0px, transparent 1px, transparent 32px);
+}
+
+a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------------- */
+/* Typography helpers                                                */
+/* ---------------------------------------------------------------- */
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum';
+}
+
+.glow-text-cyan { color: var(--accent-cyan); text-shadow: 0 0 12px rgba(45, 212, 255, 0.55); }
+.glow-text-amber { color: var(--accent-amber); text-shadow: 0 0 12px rgba(255, 179, 71, 0.55); }
+.glow-text-magenta { color: var(--cat-distracting); text-shadow: 0 0 12px rgba(255, 61, 143, 0.55); }
+
+/* ---------------------------------------------------------------- */
+/* Panels / cards                                                    */
+/* ---------------------------------------------------------------- */
+
+.panel {
+  position: relative;
+  background: linear-gradient(160deg, var(--panel-elevated), var(--panel));
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.panel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.panel-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ---------------------------------------------------------------- */
+/* Buttons                                                            */
+/* ---------------------------------------------------------------- */
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--panel-border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 11px 18px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.btn:focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 2px; }
+
+.btn-primary {
+  border-color: var(--accent-cyan-dim);
+  background: rgba(45, 212, 255, 0.08);
+  color: var(--accent-cyan);
+}
+.btn-primary:hover:not(:disabled) { background: rgba(45, 212, 255, 0.16); box-shadow: var(--glow-cyan); }
+
+.btn-danger {
+  border-color: #7a2a4c;
+  background: rgba(255, 61, 143, 0.08);
+  color: var(--cat-distracting);
+}
+.btn-danger:hover:not(:disabled) { background: rgba(255, 61, 143, 0.16); box-shadow: var(--glow-magenta); }
+
+.btn-ghost {
+  border-color: var(--panel-border);
+  background: transparent;
+  color: var(--text-secondary);
+}
+.btn-ghost:hover:not(:disabled) { border-color: var(--accent-cyan-dim); color: var(--accent-cyan); }
+
+.btn-block { width: 100%; }
+.btn-sm { padding: 7px 12px; font-size: 11px; }
+
+/* ---------------------------------------------------------------- */
+/* Form fields                                                       */
+/* ---------------------------------------------------------------- */
+
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+
+.field label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.field input,
+.field textarea,
+.field select {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--text-dim); }
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  border-color: var(--accent-cyan-dim);
+  box-shadow: 0 0 0 3px rgba(45, 212, 255, 0.12);
+}
+
+.field textarea { resize: vertical; min-height: 56px; font-family: var(--font-display); }
+
+/* ---------------------------------------------------------------- */
+/* Badges (category pills)                                           */
+/* ---------------------------------------------------------------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.badge--productive { color: var(--cat-productive); background: rgba(62, 242, 160, 0.1); border-color: rgba(62, 242, 160, 0.25); }
+.badge--distracting { color: var(--cat-distracting); background: rgba(255, 61, 143, 0.1); border-color: rgba(255, 61, 143, 0.25); }
+.badge--neutral { color: var(--cat-neutral); background: rgba(107, 120, 148, 0.12); border-color: rgba(107, 120, 148, 0.25); }
+
+/* ---------------------------------------------------------------- */
+/* Rank badge                                                        */
+/* ---------------------------------------------------------------- */
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  border-radius: var(--radius-md);
+  border: 1px solid currentColor;
+  width: 64px;
+  height: 64px;
+  font-size: 30px;
+}
+
+.rank-badge[data-rank='S'] { color: var(--rank-s); box-shadow: var(--glow-amber); animation: pulse-glow 2.2s ease-in-out infinite; }
+.rank-badge[data-rank='A'] { color: var(--rank-a); box-shadow: var(--glow-cyan); }
+.rank-badge[data-rank='B'] { color: var(--rank-b); box-shadow: var(--glow-green); }
+.rank-badge[data-rank='C'] { color: var(--rank-c); box-shadow: 0 0 16px rgba(255, 159, 67, 0.35); }
+.rank-badge[data-rank='D'] { color: var(--rank-d); box-shadow: var(--glow-magenta); }
+.rank-badge[data-rank='—'] { color: var(--text-dim); box-shadow: none; }
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 14px rgba(255, 210, 63, 0.4); }
+  50% { box-shadow: 0 0 28px rgba(255, 210, 63, 0.75); }
+}
+
+/* ---------------------------------------------------------------- */
+/* Progress ring (SVG, driven by --pct + stroke-dasharray via JS)    */
+/* ---------------------------------------------------------------- */
+
+.ring-track { stroke: rgba(255, 255, 255, 0.06); fill: none; }
+.ring-fill { fill: none; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+
+/* ---------------------------------------------------------------- */
+/* Scrollbars (keep them on-theme instead of default browser chrome) */
+/* ---------------------------------------------------------------- */
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: var(--radius-pill); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan-dim); }
+
+/* ---------------------------------------------------------------- */
+/* Reduced motion                                                    */
+/* ---------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

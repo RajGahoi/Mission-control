@@ -1,0 +1,237 @@
+/* shared/timeline.css
+   The "Attention Trajectory" component — a vertical, color-coded waypoint
+   timeline. Used two ways from the same markup/classes:
+     - Static (Mission Report): every node renders already "visited" —
+       fully lit, no cursor — a finished flight recording.
+     - Interactive (Distraction Replay): nodes start dim ("upcoming"),
+       a traveling pulsing cursor moves node-to-node, and connectors
+       "charge up" with color as the cursor passes them.
+*/
+
+.trajectory {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.trajectory-item {
+  position: relative;
+  display: flex;
+  gap: 16px;
+}
+
+.trajectory-item.is-clickable { cursor: pointer; }
+.trajectory-item.is-clickable:hover .trajectory-label { color: var(--accent-cyan); }
+
+.trajectory-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40px;
+  flex: 0 0 40px;
+}
+
+.trajectory-node {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  border: 2px solid var(--panel-border);
+  background: var(--panel);
+  color: var(--text-dim);
+  position: relative;
+  z-index: 2;
+  transition: border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, background 0.5s ease, transform 0.3s ease, filter 0.3s ease;
+}
+
+.trajectory-node-icon { line-height: 1; }
+
+.trajectory-connector {
+  width: 3px;
+  flex: 0 0 auto;
+  height: var(--connector-h, 32px);
+  min-height: var(--connector-h, 32px);
+  background: var(--panel-border-soft);
+  border-radius: 2px;
+  margin: 2px 0;
+  transition: background 0.5s ease, box-shadow 0.5s ease;
+}
+
+.trajectory-content {
+  flex: 1;
+  padding-bottom: 22px;
+  min-width: 0;
+}
+
+.trajectory-time {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+
+.trajectory-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  transition: color 0.2s ease;
+}
+
+.trajectory-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+
+.trajectory-live-tag {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--accent-cyan);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.trajectory-live-tag::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+  animation: trajectory-pulse 1.1s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------- */
+/* Category -> color, applied once a node is visited/active          */
+/* ---------------------------------------------------------------- */
+
+.trajectory-item.is-visited .trajectory-node,
+.trajectory-item.is-active .trajectory-node {
+  background: var(--panel-elevated);
+}
+
+.trajectory-item.is-visited .trajectory-node.cat-productive,
+.trajectory-item.is-active .trajectory-node.cat-productive {
+  border-color: var(--cat-productive); color: var(--cat-productive);
+  box-shadow: var(--glow-green); background: rgba(62, 242, 160, 0.08);
+}
+.trajectory-item.is-visited .trajectory-node.cat-distracting,
+.trajectory-item.is-active .trajectory-node.cat-distracting {
+  border-color: var(--cat-distracting); color: var(--cat-distracting);
+  box-shadow: var(--glow-magenta); background: rgba(255, 61, 143, 0.08);
+}
+.trajectory-item.is-visited .trajectory-node.cat-neutral,
+.trajectory-item.is-active .trajectory-node.cat-neutral {
+  border-color: var(--cat-neutral); color: var(--cat-neutral);
+  box-shadow: 0 0 12px rgba(107, 120, 148, 0.35); background: rgba(107, 120, 148, 0.08);
+}
+.trajectory-item.is-visited .trajectory-node.cat-start,
+.trajectory-item.is-active .trajectory-node.cat-start {
+  border-color: var(--accent-cyan); color: var(--accent-cyan);
+  box-shadow: var(--glow-cyan); background: rgba(45, 212, 255, 0.08);
+}
+.trajectory-item.is-visited .trajectory-node.cat-end-complete,
+.trajectory-item.is-active .trajectory-node.cat-end-complete {
+  border-color: var(--rank-s); color: var(--rank-s);
+  box-shadow: var(--glow-amber); background: rgba(255, 210, 63, 0.08);
+}
+.trajectory-item.is-visited .trajectory-node.cat-end-abandon,
+.trajectory-item.is-active .trajectory-node.cat-end-abandon {
+  border-color: var(--cat-distracting); color: var(--cat-distracting);
+  box-shadow: var(--glow-magenta); background: rgba(255, 61, 143, 0.08);
+}
+
+.trajectory-item.is-active .trajectory-node {
+  transform: scale(1.14);
+  animation: trajectory-pulse 1.3s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------- */
+/* Upcoming (replay only) — dim, no signal yet                       */
+/* ---------------------------------------------------------------- */
+
+.trajectory-item.is-upcoming .trajectory-node {
+  opacity: 0.4;
+  filter: grayscale(0.5);
+  box-shadow: none;
+}
+.trajectory-item.is-upcoming .trajectory-content {
+  opacity: 0.4;
+}
+
+/* ---------------------------------------------------------------- */
+/* Charged connectors (replay only)                                  */
+/* ---------------------------------------------------------------- */
+
+.trajectory-connector[data-cat='productive'].is-charged {
+  background: var(--cat-productive); box-shadow: 0 0 10px rgba(62, 242, 160, 0.55);
+}
+.trajectory-connector[data-cat='distracting'].is-charged {
+  background: var(--cat-distracting); box-shadow: 0 0 10px rgba(255, 61, 143, 0.55);
+}
+.trajectory-connector[data-cat='neutral'].is-charged {
+  background: var(--cat-neutral); box-shadow: 0 0 8px rgba(107, 120, 148, 0.4);
+}
+.trajectory-connector[data-cat='start'].is-charged {
+  background: var(--accent-cyan); box-shadow: 0 0 10px rgba(45, 212, 255, 0.5);
+}
+
+/* ---------------------------------------------------------------- */
+/* Traveling cursor (replay only)                                    */
+/* ---------------------------------------------------------------- */
+
+.trajectory-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.trajectory-cursor::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--cursor-color, var(--accent-cyan));
+  opacity: 0.85;
+  animation: trajectory-cursor-ping 1.5s ease-out infinite;
+}
+.trajectory-cursor::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--cursor-color, var(--accent-cyan));
+  box-shadow: 0 0 18px var(--cursor-color, var(--accent-cyan));
+}
+
+@keyframes trajectory-cursor-ping {
+  0% { transform: scale(0.75); opacity: 0.9; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+@keyframes trajectory-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.4); }
+}
+
+/* Empty state, shown when a mission has no events at all */
+.trajectory-empty {
+  color: var(--text-dim);
+  font-size: 13px;
+  padding: 24px 0;
+}
